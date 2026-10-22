@@ -1,0 +1,26 @@
+{
+  "name": "blogs-app-relational-database",
+  "version": "1.0.0",
+  "description": "blogs app with  relational database",
+  "homepage": "https://github.com/kuolbuom/par13#readme",
+  "bugs": {
+    "url": "https://github.com/kuolbuom/par13/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kuolbuom/par13.git"
+  },
+  "license": "ISC",
+  "author": "Kuol Buom Patai",
+  "type": "commonjs",
+  "main": "cli.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "dotenv": "^18.0.8",
+    "express": "^5.3.0",
+    "pg": "^8.23.1",
+    "sequelize": "^6.37.8"
+  }
+}
