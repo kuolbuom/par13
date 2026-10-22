@@ -134,3 +134,74 @@ Executing (default): SELECT * FROM blogs
   }
 ]
 PS C:\Users\Student\Desktop\part13-blog> 
+
+class Blog extends Model {}
+- extends Model — makes Blog a Sequelize model, allowing you to use methods such as Blog.findAll(), Blog.create(), and Blog.findByPk().
+id: {
+  type: DataTypes.INTEGER,
+  primaryKey: true,
+  autoIncrement: true,
+},
+
+
+- primaryKey: true — identifies each blog uniquely.
+- autoIncrement: true — PostgreSQL generates the next ID automatically.
+author: {
+  type: DataTypes.STRING,
+  allowNull: false,
+},
+
+
+- allowNull: false — prevents the author from being NULL.
+- You've correctly applied this to author, url, and title, since these fields are required for your application.
+likes: {
+  type: DataTypes.INTEGER,
+  defaultValue: 0,
+},
+
+
+- Good choice. If you create a blog without specifying likes, Sequelize uses 0.
+2. Reviewing your configuration
+Setting	Purpose	Review
+sequelize	Connects the model to your database connection	Correct
+underscored: true	Uses snake_case for automatically generated column names	Good, especially for consistency
+timestamps: false	Disables automatic createdAt and updatedAt columns	Correct if you don't need them
+modelName: "Blog"	Names the Sequelize model	Correct
+One detail to understand: underscored: true normally maps Sequelize's camelCase attributes, such as createdAt, to snake_case database columns, such as created_at. It does not change names like author or likes, which are already lowercase.
+3. What I would improve
+Improvement 1: Consider DataTypes.TEXT for long text
+Your use of DataTypes.STRING is valid. However, PostgreSQL blog titles and URLs are usually fine as strings, while longer article content would be better represented by DataTypes.TEXT.
+
+For your current fields, you don't need to change anything.
+Improvement 2: Consider whether author should be required
+You've set allowNull: false for author. That is reasonable if every blog must have an author. If your application permits anonymous blog posts, you could allow null values instead.
+
+This is a business rule, not a coding mistake.
+Improvement 3: Consider database-level constraints
+Your model defines likes as an integer with a default of zero, but it does not prevent negative likes. If your application should never permit negative likes, you could add a validation:
+likes: {
+  type: DataTypes.INTEGER,
+  defaultValue: 0,
+  validate: {
+    min: 0,
+  },
+},
+
+
+This Sequelize validation helps reject negative values through Sequelize operations. If you need the database itself to enforce that rule for every kind of database write, add a PostgreSQL CHECK constraint too.
+4. My overall review
+Model structure: Good
+
+Field types and defaults: Appropriate
+
+Sequelize configuration: Correct
+
+Optional improvement: Validate that likes is not negative
+
+
+My recommendation: Keep your model as it is for now. It is suitable for a basic Full Stack Open blog application.
+
+One important mental model to remember:
+- The Sequelize model describes how your application works with database records.
+- The PostgreSQL table stores the actual records and enforces its own database constraints.
+Defining a field in Sequelize does not necessarily mean an existing PostgreSQL table will automatically change to match it. That depends on how you manage your database schema.
