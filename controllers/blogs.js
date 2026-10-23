@@ -1,14 +1,14 @@
 // The route handling associated with notes can be found in the file controllers/notes.js:
 const router = require("express").Router();
 
-const Blog = require("./models/blog");
+const Blog = require("../models/blog");
 
-router.get("/api/blogs", async (req, res) => {
+router.get("/", async (req, res) => {
   const blogs = await Blog.findAll();
   res.json(blogs);
 });
 
-router.post("/api/blogs", async (req, res) => {
+router.post("/", async (req, res) => {
   try {
     const blog = await Blog.create(req.body);
     res.json(blog);
@@ -17,11 +17,26 @@ router.post("/api/blogs", async (req, res) => {
   }
 });
 
-router.delete("/api/blogs/:id", async (req, res) => {
-  const blog = await Blog.findByPk(req.params.id);
+const blogFinder = async (req, res, next) => {
+  req.blog = await Blog.findByPk(req.params.id);
+  next();
+};
+
+router.delete("/:id", blogFinder, async (req, res) => {
+  const blog = req.blog;
   if (blog) {
     await blog.destroy();
     res.status(204).end();
+  } else {
+    res.status(404).json({ error });
+  }
+});
+
+router.put("/:id", blogFinder, async (req, res) => {
+  const blog = req.blog;
+  if (blog) {
+    await blog.update(req.body);
+    res.json(blog);
   } else {
     res.status(404).json({ error });
   }
