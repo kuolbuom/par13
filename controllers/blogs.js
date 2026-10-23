@@ -8,12 +8,15 @@ router.get("/", async (req, res) => {
   res.json(blogs);
 });
 
-router.post("/", async (req, res) => {
+router.post("/", async (req, res, next) => {
   try {
+    // try attempts to create the blog.
     const blog = await Blog.create(req.body);
     res.json(blog);
   } catch (error) {
-    res.status(400).json({ error });
+    // catch catches a failure.
+    // next(error) passes that failure to Express's error-handling middleware.
+    next(error);
   }
 });
 
@@ -22,23 +25,31 @@ const blogFinder = async (req, res, next) => {
   next();
 };
 
-router.delete("/:id", blogFinder, async (req, res) => {
-  const blog = req.blog;
-  if (blog) {
-    await blog.destroy();
-    res.status(204).end();
-  } else {
-    res.status(404).json({ error });
+router.delete("/:id", blogFinder, async (req, res, next) => {
+  try {
+    const blog = req.blog;
+    if (blog) {
+      await blog.destroy();
+      res.status(204).end();
+    } else {
+      res.status(404).json({ error });
+    }
+  } catch (error) {
+    next(error);
   }
 });
 
-router.put("/:id", blogFinder, async (req, res) => {
-  const blog = req.blog;
-  if (blog) {
-    await blog.update(req.body);
-    res.json(blog);
-  } else {
-    res.status(404).json({ error });
+router.put("/:id", blogFinder, async (req, res, next) => {
+  try {
+    const blog = req.blog;
+    if (blog) {
+      await blog.update(req.body);
+      res.json(blog);
+    } else {
+      res.status(404).json({ error });
+    }
+  } catch (error) {
+    next(error);
   }
 });
 
