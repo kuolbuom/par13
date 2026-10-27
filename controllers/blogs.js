@@ -2,19 +2,40 @@
 const router = require("express").Router();
 
 const Blog = require("../models/blog");
+const { userExtractor } = require("../util/middleware");
 
 router.get("/", async (req, res) => {
   const blogs = await Blog.findAll();
   res.json(blogs);
 });
 
-router.post("/", async (req, res, next) => {
+// const tokenExtractor = (req, res, next) => {
+//   const authorization = req.get("authorization");
+//   if (authorization && authorization.toLowerCase().startsWith("bearer ")) {
+//     try {
+//       req.decodedToken = jwt.verify(authorization.substring(7), SECRET);
+//     } catch {
+//       return res.status(401).json({ error: "token invalid" });
+//     }
+//   } else {
+//     return res.status(401).json({ error: "token missing" });
+//   }
+//   next();
+// };
+
+router.post("/", userExtractor, async (req, res, next) => {
   try {
     // try attempts to create the blog.
-    const blog = await Blog.create(req.body);
+    const blog = await Blog.create({
+      // ...req.body copies the blog information submitted by the client.
+      ...req.body,
+      // userId: req.user.id assigns ownership to the authenticated user.
+      // let's hard code the blog to be attached to the first user found in the database:
+      userId: req.user.id,
+    });
     res.json(blog);
   } catch (error) {
-    // catch catches a failure.
+    // catches a failure.
     // next(error) passes that failure to Express's error-handling middleware.
     next(error);
   }
