@@ -1,11 +1,18 @@
 // The route handling associated with notes can be found in the file controllers/notes.js:
 const router = require("express").Router();
 
+const { User } = require("../models");
 const Blog = require("../models/blog");
 const { userExtractor } = require("../util/middleware");
 
 router.get("/", async (req, res) => {
-  const blogs = await Blog.findAll();
+  const blogs = await Blog.findAll({
+    attributes: { exclude: ["userId"] },
+    include: {
+      model: User,
+      attributes: ["name"],
+    },
+  });
   res.json(blogs);
 });
 

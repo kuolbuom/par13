@@ -8,6 +8,7 @@ router.get("/", async (req, res, next) => {
       // Let's change the route that returns all users so that each user's blogs are also shown:
       include: {
         model: Blog,
+        attributes: { exclude: ["userId"] },
       },
     });
     res.json(users);
