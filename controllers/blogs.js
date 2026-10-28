@@ -46,15 +46,21 @@ const blogFinder = async (req, res, next) => {
   next();
 };
 
-router.delete("/:id", blogFinder, async (req, res, next) => {
+router.delete("/:id", userExtractor, blogFinder, async (req, res, next) => {
+  const blog = req.blog;
+
   try {
     const blog = req.blog;
-    if (blog) {
-      await blog.destroy();
-      res.status(204).end();
-    } else {
-      res.status(404).json({ error });
+
+    if (blog.userId !== req.user.id) {
+      return res.status(403).json({
+        error: "only the user who added this blog can delete it",
+      });
     }
+
+    await blog.destroy();
+
+    return res.status(204).end();
   } catch (error) {
     next(error);
   }

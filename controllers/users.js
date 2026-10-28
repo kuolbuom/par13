@@ -5,7 +5,7 @@ const { User, Blog } = require("../models");
 router.get("/", async (req, res, next) => {
   try {
     const users = await User.findAll({
-      // Let's change the route that returns all users so that each user's notes are also shown:
+      // Let's change the route that returns all users so that each user's blogs are also shown:
       include: {
         model: Blog,
       },
