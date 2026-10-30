@@ -14,6 +14,16 @@ User.init(
       type: DataTypes.STRING,
       unique: true,
       allowNull: false,
+      createdAt: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        defaultValue: DataTypes.NOW,
+      },
+      updatedAt: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        defaultValue: DataTypes.NOW,
+      },
       validate: {
         // notEmpty: true,
         isEmail: {

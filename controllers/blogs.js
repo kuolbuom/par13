@@ -5,6 +5,8 @@ const { User } = require("../models");
 const Blog = require("../models/blog");
 const { userExtractor } = require("../util/middleware");
 
+const { Op } = require("sequelize");
+
 router.get("/", async (req, res) => {
   const blogs = await Blog.findAll({
     attributes: { exclude: ["userId"] },
@@ -12,6 +14,13 @@ router.get("/", async (req, res) => {
       model: User,
       attributes: ["name"],
     },
+    where: req.query.search
+      ? {
+          title: {
+            [Op.iLike]: `%${req.query.search}%`,
+          },
+        }
+      : {},
   });
   res.json(blogs);
 });
