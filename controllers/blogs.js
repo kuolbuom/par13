@@ -32,6 +32,7 @@ router.get("/", async (req, res) => {
       attributes: ["name"],
     },
     where,
+    order: [["likes", "DESC"]],
     // where: req.query.search
     //   ? {
     //       [Op.or]: [
@@ -49,6 +50,7 @@ router.get("/", async (req, res) => {
     //     }
     //   : {},
   });
+
   res.json(blogs);
 });
 
