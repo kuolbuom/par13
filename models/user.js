@@ -38,6 +38,10 @@ User.init(
         notEmpty: true,
       },
     },
+    passwordHash: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
   },
   {
     sequelize,

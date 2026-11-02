@@ -4,7 +4,7 @@ const app = express();
 
 const { PORT } = require("./util/config");
 
-const { connectionToDatabase } = require("./util/db");
+const { connectionToDatabase, sequelize } = require("./util/db");
 const blogsRouter = require("./controllers/blogs");
 const usersRouter = require("./controllers/users");
 const loginRouter = require("./controllers/login");
@@ -15,6 +15,40 @@ const { tokenExtractor } = require("./util/middleware");
 
 app.use(express.json());
 app.use(tokenExtractor);
+
+//reset route for testing purposes
+// router.post("/reset", async (req, res) => {
+//   await Blog.destroy({
+//     where: {},
+//     truncate: true,
+//     cascade: true,
+//   });
+
+//   await User.destroy({
+//     where: {},
+//     truncate: true,
+//     cascade: true,
+//   });
+
+//   res.status(204).end();
+// });
+
+app.get("/", (req, res) => {
+  res.sendStatus(200);
+});
+
+app.post("/api/reset", async (req, res) => {
+  if (process.env.TESTING !== "true") {
+    return res.sendStatus(404);
+  }
+
+  await sequelize.truncate({
+    cascade: true,
+    restartIdentity: true,
+  });
+
+  res.status(204).end();
+});
 
 app.use("/api/blogs", blogsRouter);
 app.use("/api/users", usersRouter);

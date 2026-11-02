@@ -4,6 +4,8 @@ const router = require("express").Router();
 const { SECRET } = require("../util/config");
 const User = require("../models/user");
 
+const bcrypt = require("bcrypt");
+
 router.get("/", async (req, res) => {
   //wait for all users in database if found
   const users = await User.findAll();
@@ -22,7 +24,12 @@ router.post("/", async (request, response) => {
   });
 
   //check whether password in request.body matches secret and stored it here -> passwordCorrect
-  const passwordCorrect = body.password === "secret";
+  // const passwordCorrect = body.password === "secret";
+  const passwordCorrect = user
+    ? // checks whether the submitted password matches the stored hash.
+      await bcrypt.compare(body.password, user.passwordHash)
+    : // If the username does not exist, it sets passwordCorrect to false without trying to compare anything.
+      false;
   //if no user in database and valid password, stop send 401 and error msg to client
   if (!(user && passwordCorrect)) {
     return response.status(401).json({

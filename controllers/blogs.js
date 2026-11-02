@@ -6,6 +6,7 @@ const Blog = require("../models/blog");
 const { userExtractor } = require("../util/middleware");
 
 const { Op } = require("sequelize");
+const { sequelize } = require("../util/db");
 
 router.get("/", async (req, res) => {
   const where = {};
@@ -29,6 +30,7 @@ router.get("/", async (req, res) => {
     attributes: { exclude: ["userId"] },
     include: {
       model: User,
+      as: "user",
       attributes: ["name"],
     },
     where,
