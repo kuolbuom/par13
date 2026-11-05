@@ -626,3 +626,26 @@ Op.and	All conditions must match
 Op.or	At least one condition must match
 Op.substring	Find text containing the search value
 Op.in	Match any value in a given list
+
+
+Step 1: Create the new database
+Open your Aiven PostgreSQL connection using psql and connect to defaultdb.
+
+Run this SQL command:
+CREATE DATABASE postgres;
+
+Then verify that it exists:
+\l
+
+
+You should see both:
+- defaultdb — Notes project
+- postgres — Blog project
+
+Once you've run those commands, share the output, and we'll configure your Blog project's .env file to use postgres.
+
+Confirmed
+Database	       Purpose
+defaultdb	       Notes project
+postgres	       Blog project
+test_db	         Existing test database
