@@ -84,7 +84,7 @@ router.get("/:id", async (req, res, next) => {
         as: "readings",
         attributes: { exclude: ["userId"] },
         through: {
-          attributes: [],
+          attributes: ["id", "read"],
         },
       },
     });
@@ -94,6 +94,11 @@ router.get("/:id", async (req, res, next) => {
         error: "User not found",
       });
     }
+    //rename the ReadingList property to readingList for each blog in the readings array
+    user.readings.forEach((blog) => {
+      blog.dataValues.readingList = blog.dataValues.ReadingList;
+      delete blog.dataValues.ReadingList;
+    });
 
     res.json(user);
   } catch (error) {
