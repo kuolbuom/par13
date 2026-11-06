@@ -79,6 +79,14 @@ router.get("/:id", async (req, res, next) => {
   try {
     const user = await User.findByPk(req.params.id, {
       attributes: { exclude: ["passwordHash"] },
+      include: {
+        model: Blog,
+        as: "readings",
+        attributes: { exclude: ["userId"] },
+        through: {
+          attributes: [],
+        },
+      },
     });
 
     if (!user) {

@@ -1,12 +1,30 @@
 const Blog = require("./blog");
 const User = require("./user");
+const ReadingList = require("./readingLists");
 
+//represents blogs created by a user.
 User.hasMany(Blog, {
   as: "blogs",
 });
 
 Blog.belongsTo(User, {
   as: "user",
+});
+
+// New relationships: reading list
+//represents blogs that a user wants to read.
+User.belongsToMany(Blog, {
+  through: ReadingList,
+  as: "readings",
+  foreignKey: "userId",
+  otherKey: "blogId",
+});
+
+Blog.belongsToMany(User, {
+  through: ReadingList,
+  as: "readers",
+  foreignKey: "blogId",
+  otherKey: "userId",
 });
 
 // const syncModels = async () => {
@@ -24,5 +42,6 @@ Blog.belongsTo(User, {
 module.exports = {
   Blog,
   User,
+  ReadingList,
   // syncModels,
 };

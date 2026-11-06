@@ -1,0 +1,22 @@
+### Add blog to reading list
+POST  http://localhost:3000/api/readinglists
+Content-Type: application/json
+# Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3R1c2VyQGdtYWlsLmNvbSIsImlkIjoxLCJpYXQiOjE3OTM4ODcxODZ9.INjcTHjTOnY8QtXcq3YADIJOWluMl4rmbxEHD3tfdcQ
+
+# {
+#   "title": "Test Blog",
+#   "author": "Test Author",
+#   "url": "https://testblog.com",
+#   "likes": 0
+# }
+
+{
+  "userId": 99,
+  "blogId": 1
+}
+
+# {
+#   "username": "testuser@gmail.com",
+#   "name": "Test User",
+#   "password": "testpassword"
+# }
