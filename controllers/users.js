@@ -76,6 +76,14 @@ router.put("/:username", async (req, res, next) => {
 
 // GET one user using ID
 router.get("/:id", async (req, res, next) => {
+  const readingListWhere = {};
+
+  if (req.query.read === "true") {
+    readingListWhere.read = true;
+  } else if (req.query.read === "false") {
+    readingListWhere.read = false;
+  }
+
   try {
     const user = await User.findByPk(req.params.id, {
       attributes: { exclude: ["passwordHash"] },
@@ -85,6 +93,7 @@ router.get("/:id", async (req, res, next) => {
         attributes: { exclude: ["userId"] },
         through: {
           attributes: ["id", "read"],
+          where: readingListWhere,
         },
       },
     });
