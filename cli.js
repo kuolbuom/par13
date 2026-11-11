@@ -2,6 +2,8 @@
 const express = require("express");
 const app = express();
 
+console.log("TESTING environment:", process.env.TESTING);
+
 const { PORT } = require("./util/config");
 
 const { connectionToDatabase, sequelize } = require("./util/db");

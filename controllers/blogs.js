@@ -7,7 +7,7 @@ const { userExtractor } = require("../util/middleware");
 
 const { Op } = require("sequelize");
 
-router.get("/", userExtractor, async (req, res) => {
+router.get("/", async (req, res) => {
   const where = {};
 
   if (req.query.search) {
