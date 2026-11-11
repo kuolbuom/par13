@@ -1,6 +1,10 @@
 const Blog = require("./blog");
 const User = require("./user");
 const ReadingList = require("./readingLists");
+const Session = require("./session");
+
+User.hasMany(Session);
+Session.belongsTo(User);
 
 //represents blogs created by a user.
 User.hasMany(Blog, {
@@ -43,5 +47,6 @@ module.exports = {
   Blog,
   User,
   ReadingList,
+  Session,
   // syncModels,
 };

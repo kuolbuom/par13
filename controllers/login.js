@@ -3,6 +3,7 @@ const router = require("express").Router();
 
 const { SECRET } = require("../util/config");
 const User = require("../models/user");
+const Session = require("../models/session");
 
 const bcrypt = require("bcrypt");
 
@@ -37,6 +38,13 @@ router.post("/", async (request, response) => {
     });
   }
 
+  // Prevent disabled users from logging in
+  if (user.disabled) {
+    return response.status(403).json({
+      error: "account disabled, please contact admin",
+    });
+  }
+
   //create payload or object carring username, id and save it in userForToken variable
   const userForToken = {
     username: user.username,
@@ -46,6 +54,13 @@ router.post("/", async (request, response) => {
   //generate authentication token and asign the user by payload and secret
   const token = jwt.sign(userForToken, SECRET);
 
+  // Save the active session in the database
+  //This is the central part of the exercise.
+  await Session.create({
+    token,
+    userId: user.id,
+  });
+
   //response with 200 succeeded and send token, username, name
   response
     .status(200)
@@ -53,3 +68,7 @@ router.post("/", async (request, response) => {
 });
 
 module.exports = router;
+
+// Remember the difference:
+// - JWT authentication: the token identifies the user.
+// - Server-side sessions: the database stores active tokens so the server can manage and invalidate them.

@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken");
 const { SECRET } = require("./config");
 const User = require("../models/user");
+const Session = require("../models/session");
 
 // Extracts the JWT from the request header.
 const tokenExtractor = (request, response, next) => {
@@ -42,6 +43,22 @@ const userExtractor = async (request, response, next) => {
       return response.status(401).json({
         error: "user not found",
       });
+    }
+
+    //checks whether the user has subsequently been disabled.
+    if (user.disabled) {
+      return response.status(403).json({
+        error: "account disabled",
+      });
+    }
+
+    // Check whether the token exists in the sessions table
+    const session = await Session.findOne({
+      where: { token: request.token },
+    });
+
+    if (!session) {
+      return response.status(401).json({ error: "session expired or invalid" });
     }
 
     //This makes the authenticated user available to subsequent middleware and route handlers.

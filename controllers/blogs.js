@@ -6,9 +6,8 @@ const Blog = require("../models/blog");
 const { userExtractor } = require("../util/middleware");
 
 const { Op } = require("sequelize");
-const { sequelize } = require("../util/db");
 
-router.get("/", async (req, res) => {
+router.get("/", userExtractor, async (req, res) => {
   const where = {};
 
   if (req.query.search) {
@@ -113,7 +112,7 @@ router.delete("/:id", userExtractor, blogFinder, async (req, res, next) => {
   }
 });
 
-router.put("/:id", blogFinder, async (req, res, next) => {
+router.put("/:id", userExtractor, blogFinder, async (req, res, next) => {
   try {
     const blog = req.blog;
     if (blog) {
