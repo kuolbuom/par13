@@ -2,78 +2,84 @@ const { DataTypes } = require("sequelize");
 
 module.exports = {
   up: async ({ context: queryInterface }) => {
-    await queryInterface.createTable("users", {
-      id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true,
-      },
-      username: {
-        type: DataTypes.STRING,
-        unique: true,
-        allowNull: false,
-      },
-      name: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
-      password_hash: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
-      created_at: {
-        type: DataTypes.DATE,
-        allowNull: false,
-        defaultValue: DataTypes.NOW,
-      },
-      updated_at: {
-        type: DataTypes.DATE,
-        allowNull: false,
-        defaultValue: DataTypes.NOW,
-      },
-    });
-
-    await queryInterface.createTable("blogs", {
-      id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true,
-      },
-      title: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
-      author: {
-        type: DataTypes.TEXT,
-        allowNull: false,
-      },
-      url: {
-        type: DataTypes.TEXT,
-        allowNull: false,
-      },
-      likes: {
-        type: DataTypes.INTEGER,
-        defaultValue: 0,
-      },
-      created_at: {
-        type: DataTypes.DATE,
-        allowNull: false,
-        defaultValue: DataTypes.NOW,
-      },
-      updated_at: {
-        type: DataTypes.DATE,
-        allowNull: false,
-        defaultValue: DataTypes.NOW,
-      },
-      user_id: {
-        type: DataTypes.INTEGER,
-        references: {
-          model: "users",
-          key: "id",
+    const usersTableExists = await queryInterface.tableExists("users");
+    if (!usersTableExists) {
+      await queryInterface.createTable("users", {
+        id: {
+          type: DataTypes.INTEGER,
+          primaryKey: true,
+          autoIncrement: true,
         },
-        onDelete: "SET NULL",
-      },
-    });
+        username: {
+          type: DataTypes.STRING,
+          unique: true,
+          allowNull: false,
+        },
+        name: {
+          type: DataTypes.STRING,
+          allowNull: false,
+        },
+        password_hash: {
+          type: DataTypes.STRING,
+          allowNull: false,
+        },
+        created_at: {
+          type: DataTypes.DATE,
+          allowNull: false,
+          defaultValue: DataTypes.NOW,
+        },
+        updated_at: {
+          type: DataTypes.DATE,
+          allowNull: false,
+          defaultValue: DataTypes.NOW,
+        },
+      });
+    }
+
+    const blogsTableExists = await queryInterface.tableExists("blogs");
+    if (!blogsTableExists) {
+      await queryInterface.createTable("blogs", {
+        id: {
+          type: DataTypes.INTEGER,
+          primaryKey: true,
+          autoIncrement: true,
+        },
+        title: {
+          type: DataTypes.STRING,
+          allowNull: false,
+        },
+        author: {
+          type: DataTypes.TEXT,
+          allowNull: false,
+        },
+        url: {
+          type: DataTypes.TEXT,
+          allowNull: false,
+        },
+        likes: {
+          type: DataTypes.INTEGER,
+          defaultValue: 0,
+        },
+        created_at: {
+          type: DataTypes.DATE,
+          allowNull: false,
+          defaultValue: DataTypes.NOW,
+        },
+        updated_at: {
+          type: DataTypes.DATE,
+          allowNull: false,
+          defaultValue: DataTypes.NOW,
+        },
+        user_id: {
+          type: DataTypes.INTEGER,
+          references: {
+            model: "users",
+            key: "id",
+          },
+          onDelete: "SET NULL",
+        },
+      });
+    }
   },
 
   down: async ({ context: queryInterface }) => {
